@@ -44,7 +44,7 @@ class SendCode {
 
 // Для работы с сохранением/получением кода используем класс
 
-class Code {
+class UserSettingsCode {
 	private $storeCodeProvider;
 
 	public function __construct(StoreCodeProvider $storeCodeProvider) {
@@ -64,7 +64,7 @@ class Code {
 
 // Для обновления настроек 
 
-class Settings {
+class UserSettings {
 	private $settingsProvider;
 
 	public function __construct(SettingsProvider $settingsProvider) {
@@ -94,10 +94,10 @@ $confirmCode = $sendCode->sendCode();
 
 $storeCodeProvider = new RedisCodeStoreProvider();
 
-$code = new Code($storeCodeProvider);
+$userSettingsCode = new UserSettingsCode($storeCodeProvider);
 
 // Код в хранилище
-$code->storeCode($confirmCode, $settingName, $settingValue);
+$userSettingsCode->storeCode($confirmCode, $settingName, $settingValue);
 
 
 
@@ -107,16 +107,16 @@ $confirmCode = $request[`code`];
 
 $storeCodeProvider = new RedisCodeStoreProvider();
 
-$code = new Code($storeCodeProvider);
+$userSettingsCode = new UserSettingsCode($storeCodeProvider);
 
 // Извлекаем из хранилища данные о коде, названии настройки и значении настройки
-$settingsArr = $code->getCode($confirmCode);
+$settingsArr = $userSettingsCode->getCode($confirmCode);
 
 if ($settingsArr['code'] == $confirmCode) {
     $settingsProvider = new DBSettingsProvider();
 
-    $settings = new Settings($settingsProvider);
-    $settings->updateSettings($settingsArr['settingName'], $settingsArr['settingValue']);
+    $userSettings = new UserSettings($settingsProvider);
+    $userSettings->updateSettings($settingsArr['settingName'], $settingsArr['settingValue']);
 }
 
 
